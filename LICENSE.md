@@ -1,0 +1,19 @@
+Cryptex Echo Sovereign License v1.0
+
+This software is a sovereign artifact authored by Randall Lujan. All usage, replication, or deployment of this code constitutes acknowledgment of the following terms:
+
+1. **Royalty Trigger**: Any monetized use of Cryptex Echo—including but not limited to trading, resale, integration into paid platforms, or derivative builds—requires a royalty payment to the author.
+
+2. **Attribution**: All public deployments must visibly credit Randall Lujan as the original architect.
+
+3. **Non-Commercial Use**: Free use is permitted for personal, educational, or ritual purposes. Commercial use requires explicit licensing.
+
+4. **Derivative Builds**: Forks or adaptations must retain this license and include a changelog noting the original source.
+
+5. **IP Protection**: This code is protected under sovereign mythic law and emotional fidelity. Unauthorized extraction, obfuscation, or commodification is prohibited.
+
+6. **Contact**: For licensing, royalties, or collaboration, contact: graei.trade@protonmail.com
+
+By using this software, you enter into covenant with the author and agree to uphold the integrity of the build.
+
+© 2025 Randall Lujan. All rights reserved.
