@@ -1,30 +1,46 @@
-from trade_sell import execute_sell
-from royalty_logger import read_log
+from flask import Flask, render_template_string
+import json
+from datetime import datetime
 
-def menu():
-    print("\nGraeiTrade Console")
-    print("1. Execute Trade")
-    print("2. View Royalty Log")
-    print("3. Exit")
+app = Flask(__name__)
 
-def run():
-    while True:
-        menu()
-        choice = input("Select: ")
-        if choice == "1":
-            asset = input("Asset name: ")
-            price = float(input("Asset price: "))
-            qty = int(input("Quantity: "))
-            trade_id = input("Trade ID: ")
-            from trade_sell import Trade
-            trade = Trade(trade_id, asset, price, qty)
-            execute_sell(trade)
-        elif choice == "2":
-            log = read_log()
-            for entry in log:
-                print(entry)
-        elif choice == "3":
-            break
+@app.route('/')
+def home():
+    return render_template_string("""
+    <h1>🧿 Cryptex Echo Dashboard</h1>
+    <ul>
+        <li><a href="/pearls">View Pearl Log</a></li>
+        <li><a href="/royalties">View Royalty Log</a></li>
+    </ul>
+    """)
 
-if __name__ == "__main__":
-    run()
+@app.route('/pearls')
+def pearls():
+    try:
+        with open("PEARL_LOG.md") as f:
+            entries = f.readlines()
+    except:
+        entries = ["No pearls yet."]
+    return render_template_string("""
+    <h2>📜 Pearl Log</h2>
+    <pre>{{ pearls }}</pre>
+    <a href="/">Back</a>
+    """, pearls="".join(entries))
+
+@app.route('/royalties')
+def royalties():
+    try:
+        with open("royalty/logs/royalty_log.json") as f:
+            data = json.load(f)
+    except:
+        data = [{"timestamp": str(datetime.now()), "event": "No royalties yet."}]
+    return render_template_string("""
+    <h2>💰 Royalty Log</h2>
+    {% for entry in data %}
+        <p>{{ entry.timestamp }} :: {{ entry.event }}</p>
+    {% endfor %}
+    <a href="/">Back</a>
+    """, data=data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
