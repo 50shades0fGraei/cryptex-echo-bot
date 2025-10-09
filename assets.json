@@ -1,0 +1,6 @@
+{
+  "runner": "TSLA",
+  "low_pass": ["F", "GM"],
+  "high_pass": ["RIVN", "LCID"]
+}
+

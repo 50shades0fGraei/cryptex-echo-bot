@@ -1,0 +1,14 @@
+[
+  {
+    "trade_id": "graei-test-001",
+    "asset": "MythicPearl",
+    "royalty": 10.0,
+    "timestamp": "2025-10-08T01:33:30.713948"
+  },
+  {
+    "trade_id": "graei-test-001",
+    "asset": "MythicPearl",
+    "royalty": 10.0,
+    "timestamp": "2025-10-08T01:38:41.770239"
+  }
+]
