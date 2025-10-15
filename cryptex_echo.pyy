@@ -1,0 +1,21 @@
+"""
+Cryptex Echo Bot — Sovereign Artifact
+Licensed under Cryptex Echo Sovereign License v1.0
+© 2025 Randall Lujan. All rights reserved.
+"""
+from webull_adapter import authenticate, fetch_asset_data, simulate_trade
+from trade_logic import echo_trade
+from pearl_log import pearlize
+from royalty_trigger import royalty_trigger
+
+# Assets
+runner = "TSLA"
+low_pass = "F"
+high_pass = "RIVN"
+
+event = echo_trade(runner, low_pass, high_pass)
+print(event)
+
+pearlize(event)
+royalty_trigger("Echo Invocation")
+
