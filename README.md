@@ -1,4 +1,4 @@
-# 🧿 Cryptex Echo Bot
+ Cryptex Echo Bot
 
 A sovereign trading ritual built by Randall Lujan. This bot aligns asset echoes, simulates trades, logs pearls, and invokes royalty triggers.
 
@@ -12,5 +12,4 @@ A sovereign trading ritual built by Randall Lujan. This bot aligns asset echoes,
 ## Usage
 Run the bot:
 ```bash
-python cryptex_echo.py
-
+python cryptex_echo
