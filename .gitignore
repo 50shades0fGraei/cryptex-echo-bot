@@ -1,5 +1,5 @@
-__pycache__/
-*.pyc
-PEARL_LOG.md
-ROYALTY_LOG.md
+# Ignore credential files
+webull_credentials.json
 
+# Ignore Python cache
+__pycache__/

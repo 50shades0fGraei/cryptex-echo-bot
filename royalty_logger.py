@@ -1,10 +1,13 @@
 import datetime
 import json
 import os
+from typing import List, Dict, Any
 
-LOG_PATH = "royalty/logs/royalty_log.json"
+LOG_PATH = "royalty/logs/royalty_log.jsonl"  # Use .jsonl for JSON Lines format
 
 def log_royalty(trade_id, asset, amount):
+    """Appends a new royalty record to the log file in a safe, atomic manner."""
+
     timestamp = datetime.datetime.now().isoformat()
     log_entry = {
         "trade_id": trade_id,
@@ -15,19 +18,21 @@ def log_royalty(trade_id, asset, amount):
 
     os.makedirs(os.path.dirname(LOG_PATH), exist_ok=True)
 
-    if os.path.exists(LOG_PATH):
-        with open(LOG_PATH, "r+") as file:
-            data = json.load(file)
-            data.append(log_entry)
-            file.seek(0)
-            json.dump(data, file, indent=2)
-    else:
-        with open(LOG_PATH, "w") as file:
-            json.dump([log_entry], file, indent=2)
+    # Append a single line of JSON. This is an atomic operation on most OS.
+    with open(LOG_PATH, "a") as file:
+        file.write(json.dumps(log_entry) + "\n")
 
-def read_log():
+def read_log() -> List[Dict[str, Any]]:
+    """Reads all royalty records from the log file, skipping any corrupted lines."""
     try:
-        with open("royalty_log.json", "r") as f:
-            return json.load(f)
+        with open(LOG_PATH, "r") as f:
+            entries = []
+            for line in f:
+                try:
+                    entries.append(json.loads(line))
+                except json.JSONDecodeError:
+                    # Skip corrupted or empty lines
+                    continue
+            return entries
     except FileNotFoundError:
         return []
