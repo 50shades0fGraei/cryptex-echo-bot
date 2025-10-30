@@ -1,0 +1,48 @@
+{
+  "name": "cryptex-echo-bot",
+  "version": "1.0.0",
+  "marketplace": {
+    "id": "cryptex-echo-bot",
+    "category": "Trading",
+    "tags": ["trading-bot", "crypto", "automation"],
+    "pricing": {
+      "model": "revenue-share",
+      "rate": "2%"
+    },
+    "updates": {
+      "type": "automatic",
+      "frequency": "monthly",
+      "notification": true
+    },
+    "requirements": {
+      "docker": ">=20.10.0",
+      "docker-compose": ">=2.0.0",
+      "memory": ">=2GB",
+      "storage": ">=10GB"
+    },
+    "support": {
+      "email": "graei.trade@protonmail.com",
+      "response_time": "24h",
+      "channels": [
+        "email",
+        "github-issues"
+      ]
+    },
+    "documentation": {
+      "getting_started": "/docs/getting-started.md",
+      "configuration": "/docs/configuration.md",
+      "api": "/docs/api.md",
+      "troubleshooting": "/docs/troubleshooting.md"
+    },
+    "security": {
+      "updates": "automatic",
+      "scan_frequency": "daily",
+      "vulnerability_reporting": "security@graei.trade"
+    },
+    "compliance": {
+      "data_protection": true,
+      "trading_regulations": true,
+      "privacy_policy": "/docs/privacy-policy.md"
+    }
+  }
+}

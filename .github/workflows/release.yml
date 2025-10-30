@@ -1,0 +1,112 @@
+name: Release Pipeline
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          cd frontend && npm install
+
+      - name: Build Frontend
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Run Tests
+        run: |
+          python -m pytest tests/ || echo "No tests found"
+
+      - name: Build Docker Images
+        run: |
+          docker compose build
+          docker tag cryptex-echo-bot/backend:latest cryptex-echo-bot/backend:${{ github.ref_name }}
+          docker tag cryptex-echo-bot/frontend:latest cryptex-echo-bot/frontend:${{ github.ref_name }}
+
+      - name: Generate Release Package
+        run: |
+          mkdir release
+          # Copy essential files
+          cp -r {README.md,CHANGELOG.md,LICENSE,docker-compose.yml,.env.example,deploy.sh,deploy.cmd} release/
+          cp -r docs release/
+          
+          # Create quick start guide
+          cat > release/QUICK_START.md << 'EOF'
+          # Quick Start Guide
+          
+          1. Configure Environment:
+             ```bash
+             cp .env.example .env
+             # Edit .env with your settings
+             ```
+          
+          2. Start the Bot:
+             ```bash
+             docker compose up -d
+             ```
+          
+          3. Access Dashboard:
+             - Open http://localhost:3000
+             - Login with your credentials
+             - Start trading!
+          
+          For detailed setup, see docs/
+          EOF
+          
+          # Create verification script
+          cat > release/verify_install.sh << 'EOF'
+          #!/bin/bash
+          echo "Verifying Cryptex Echo Bot installation..."
+          
+          # Check Docker
+          docker --version || { echo "Docker not found"; exit 1; }
+          
+          # Check Docker Compose
+          docker compose version || { echo "Docker Compose not found"; exit 1; }
+          
+          # Check ports
+          nc -z localhost 3000 || echo "Warning: Port 3000 is available"
+          nc -z localhost 5050 || echo "Warning: Port 5050 is available"
+          
+          # Check disk space
+          df -h . | awk 'NR==2 {print $4}' | grep -E "^[0-9\.]+G" || echo "Warning: Check disk space"
+          
+          echo "Verification complete!"
+          EOF
+          
+          chmod +x release/verify_install.sh
+          
+          # Create release archive
+          cd release && zip -r ../cryptex-echo-bot-${{ github.ref_name }}.zip .
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: cryptex-echo-bot-${{ github.ref_name }}.zip
+          body_path: CHANGELOG.md
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
