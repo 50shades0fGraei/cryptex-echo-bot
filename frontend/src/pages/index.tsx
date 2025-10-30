@@ -24,7 +24,7 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch Pearls
-    fetch('http://127.0.0.1:8000/pearls')
+    fetch('http://127.0.0.1:5050/pearls')
       .then(res => {
         if (!res.ok) {
           throw new Error('Failed to fetch pearls');
@@ -39,7 +39,7 @@ export default function Home() {
       });
 
     // Fetch Royalties
-    fetch('http://127.0.0.1:8000/royalties')
+    fetch('http://127.0.0.1:5050/royalties')
       .then(res => {
         if (!res.ok) {
           throw new Error('Failed to fetch royalties');
@@ -71,19 +71,33 @@ export default function Home() {
     setCurrentMessage('');
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/chat', {
+      const response = await fetch('http://127.0.0.1:5050/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
+        credentials: 'omit',
         body: JSON.stringify({ message: currentMessage }),
       });
-      if (!response.ok) throw new Error('Failed to get response from AI');
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to get response from AI');
+      }
+      
       const data = await response.json();
-      const aiMessage: ChatEntry = { sender: 'ai', text: data.reply };
+      const aiMessage: ChatEntry = { 
+        sender: 'ai', 
+        text: data.reply || "I received your message but couldn't generate a proper response."
+      };
       setChatHistory(prev => [...prev, aiMessage]);
     } catch (err) {
-      const errorMessage: ChatEntry = { sender: 'ai', text: "Sorry, I couldn't connect to my brain. Please check the backend." };
+      console.error('Chat error:', err);
+      const errorMessage: ChatEntry = { 
+        sender: 'ai', 
+        text: err instanceof Error ? err.message : "Sorry, I couldn't connect to my brain. Please check the backend." 
+      };
       setChatHistory(prev => [...prev, errorMessage]);
     }
   };

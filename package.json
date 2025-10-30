@@ -1,0 +1,65 @@
+{
+  "name": "cryptex-echo-bot",
+  "version": "1.0.0",
+  "description": "A sovereign trading ritual that aligns asset echoes, simulates trades, and executes profitable trades automatically.",
+  "author": "Randall Lujan",
+  "license": "Cryptex Echo Sovereign License v1.0",
+  "private": true,
+  "keywords": [
+    "trading-bot",
+    "crypto",
+    "echo-trading",
+    "automated-trading",
+    "trading-algorithm",
+    "sovereign-trading",
+    "python",
+    "next-js",
+    "docker"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/50shades0fGraei/cryptex-echo-bot"
+  },
+  "bugs": {
+    "url": "https://github.com/50shades0fGraei/cryptex-echo-bot/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "marketplace": {
+    "category": "Trading",
+    "subcategory": "Automated Trading",
+    "price": "Revenue Share",
+    "tags": [
+      "Trading Bot",
+      "Algorithmic Trading",
+      "Echo Trading",
+      "AI Assistant",
+      "Real-time Analytics"
+    ],
+    "requirements": {
+      "memory": "2GB",
+      "storage": "10GB",
+      "os": ["Windows", "Linux", "macOS"],
+      "dependencies": [
+        "Docker 20.10+",
+        "Docker Compose v2.0+"
+      ]
+    },
+    "features": [
+      "Echo Alignment Trading Strategy",
+      "AI-powered Chat Assistant",
+      "Real-time Market Analysis",
+      "Performance Tracking",
+      "Web Dashboard",
+      "Docker Deployment",
+      "Automatic Updates"
+    ],
+    "support": {
+      "email": "graei.trade@protonmail.com",
+      "documentation": "/docs",
+      "issues": "GitHub Issues"
+    }
+  }
+}

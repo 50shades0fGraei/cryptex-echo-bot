@@ -1,28 +1,113 @@
-from flask import Flask, request, jsonify
-from flask_cors import CORS
-import json
-
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+import uvicorn
+from cryptex_echo import run_echo
 from webull_adapter import save_credentials
+from graei_chat import process_chat_message
+from api_algo import router as algo_router
+import json
+from datetime import datetime
 
-app = Flask(__name__)
-# Allow requests from your Next.js development server
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}})
+app = FastAPI(
+    title="Cryptex Echo API",
+    description="Trading bot API with AI chat capabilities",
+    version="1.0.0"
+)
 
-@app.route('/api/credentials', methods=['POST'])
-def update_credentials():
-    """
-    API endpoint to receive and save Webull credentials.
-    """
-    data = request.get_json()
+# Include algorithm router
+app.include_router(router=algo_router, prefix="/algo", tags=["Algorithm Lab"])
+
+@app.get("/")
+async def root():
+    return {
+        "status": "online",
+        "message": "Cryptex Echo API is running",
+        "endpoints": [
+            "/chat - AI Chat Interface",
+            "/pearls - Trading Log",
+            "/royalties - Royalty Information",
+              "/run-trade - Execute Trade",
+              "/algo/simulate - Simulate Trading Algorithm",
+              "/algo/ai-assist - Get AI Algorithm Assistance"
+        ]
+    }
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000", "http://127.0.0.1:3001"],
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["*"],
+    expose_headers=["*"]
+)
+
+@app.get("/pearls")
+async def get_pearls():
+    try:
+        with open("pearl_log.txt", "r") as f:
+            content = f.read()
+        return {"content": content}
+    except FileNotFoundError:
+        return {"content": "No trades yet."}
+
+@app.get("/royalties")
+async def get_royalties():
+    try:
+        with open("royalty/logs/royalty_log.json", "r") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return []
+
+from pydantic import BaseModel
+
+class ChatMessage(BaseModel):
+    message: str
+
+@app.post("/chat")
+async def chat(message: ChatMessage):
+    try:
+        if not message.message.strip():
+            raise HTTPException(status_code=400, detail="Message cannot be empty")
+        
+        response = process_chat_message(message.message)
+        # Convert response to ASCII-safe string
+        if response is None:
+            response = "No response generated"
+        
+        return {
+            "reply": str(response),
+            "status": "success",
+            "timestamp": datetime.utcnow().isoformat()
+        }
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        print(f"Error processing chat message: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail="An error occurred while processing your message"
+        )
+
+@app.post("/run-trade")
+async def trigger_trade():
+    try:
+        result = run_echo()
+        return {"status": "success", "message": result}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/credentials")
+async def update_credentials(request: Request):
+    data = await request.json()
     email = data.get('email')
     password = data.get('password')
 
     if not email or not password:
-        return jsonify({"status": "error", "message": "Email and password are required"}), 400
+        raise HTTPException(status_code=400, detail="Email and password are required")
 
     save_credentials(email, password)
-    
-    return jsonify({"status": "success", "message": "Credentials saved successfully"})
+    return {"status": "success", "message": "Credentials saved successfully"}
 
-if __name__ == '__main__':
-    app.run(port=5001, debug=True)
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=5050)

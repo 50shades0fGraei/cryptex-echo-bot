@@ -1,9 +1,18 @@
 import os
 import json
-# Make sure to install the library: pip install webull-python
-from webull import webull
+from typing import Optional, Dict, Any
 
 CREDENTIALS_FILE = 'webull_credentials.json'
+
+class WebullSimulator:
+    """Simulated Webull client for development/testing."""
+    def __init__(self):
+        self.authenticated = False
+        
+    def login(self, email: str, password: str) -> Dict[str, Any]:
+        """Simulate successful login."""
+        self.authenticated = True
+        return {"accessToken": "sim_token_123"}
 
 def save_credentials(email, password):
     """Saves credentials to a local JSON file."""
@@ -54,7 +63,7 @@ def authenticate():
         return None
 
     try:
-        wb = webull()
+        wb = WebullSimulator()
         # NOTE: For a real account, you'll need to handle MFA and trade PINs.
         login_info = wb.login(email, password)
         if 'accessToken' in login_info:

@@ -88,51 +88,70 @@ def trade_overlap_zones():
                 capital["runner"] += reinvest_amount
                 monthly_pool += pool_amount
 
-# Main Loop
-for day in range(days_in_quarter):
-    # Update Prices
-    current_prices["in_passer1"] *= (1 + daily_fluctuation_in_passer1)
-    current_prices["in_passer2"] *= (1 + daily_fluctuation_in_passer2)
-    direction = random.choice([-1, 1])
-    current_prices["runner"] *= (1 + daily_fluctuation_runner * direction)
-    current_prices["runner"] = max(1000, min(15000, current_prices["runner"]))
+def run_simulation():
+    global capital, current_prices, monthly_pool, month_profits, month
+    
+    # Reset state
+    capital = starting_capital.copy()
+    current_prices = initial_prices.copy()
+    monthly_pool = 0
+    month_profits = [0]
+    month = 1
+    
+    # Main Loop
+    for day in range(days_in_quarter):
+        # Update Prices
+        current_prices["in_passer1"] *= (1 + daily_fluctuation_in_passer1)
+        current_prices["in_passer2"] *= (1 + daily_fluctuation_in_passer2)
+        direction = random.choice([-1, 1])
+        current_prices["runner"] *= (1 + daily_fluctuation_runner * direction)
+        current_prices["runner"] = max(1000, min(15000, current_prices["runner"]))
 
-    # Trade 3 times per day
-    for _ in range(3):
-        trade_overlap_zones()
+        # Trade 3 times per day
+        for _ in range(3):
+            trade_overlap_zones()
 
-    # Monthly Adjustments
-    if day % 30 == 0:
-        for passer in ["in_passer1", "in_passer2"]:
-            if capital[passer] > 0 and random.random() > 0.5:
-                units_to_buy = capital[passer] / current_prices[passer]
-                cost = currencies[passer].buy(current_prices[passer], units_to_buy, capital[passer])
-                capital[passer] -= cost
+        # Monthly Adjustments
+        if day % 30 == 0:
+            for passer in ["in_passer1", "in_passer2"]:
+                if capital[passer] > 0 and random.random() > 0.5:
+                    units_to_buy = capital[passer] / current_prices[passer]
+                    cost = currencies[passer].buy(current_prices[passer], units_to_buy, capital[passer])
+                    capital[passer] -= cost
 
-    # Profit Boost
-    for curr_name in ["runner", "in_passer1", "in_passer2"]:
-        initial = starting_capital[curr_name]
-        profit = capital[curr_name] - initial
-        if profit > 0:
-            capital[curr_name] *= (1 + profit_boost)
+        # Profit Boost
+        for curr_name in ["runner", "in_passer1", "in_passer2"]:
+            initial = starting_capital[curr_name]
+            profit = capital[curr_name] - initial
+            if profit > 0:
+                capital[curr_name] *= (1 + profit_boost)
 
-    # Monthly Boost
-    if day % 30 == 0 and day > 0:
-        monthly_boost = sum(month_profits[-1] * 0.5 for _ in range(3) if month_profits)
-        for curr_name in starting_capital:
-            capital[curr_name] += monthly_boost * (starting_capital[curr_name] / initial_investment)
-        month += 1
+        # Monthly Boost
+        if day % 30 == 0 and day > 0:
+            monthly_boost = sum(month_profits[-1] * 0.5 for _ in range(3) if month_profits)
+            for curr_name in starting_capital:
+                capital[curr_name] += monthly_boost * (starting_capital[curr_name] / initial_investment)
+            month += 1
 
-    # Track Monthly Profits
-    if day % 30 == 29:
-        month_profit = sum(capital[curr] - starting_capital[curr] for curr in starting_capital)
-        month_profits.append(month_profit)
+        # Track Monthly Profits
+        if day % 30 == 29:
+            month_profit = sum(capital[curr] - starting_capital[curr] for curr in starting_capital)
+            month_profits.append(month_profit)
 
-# Final Results
-total = sum(capital.values()) + monthly_pool
-quarterly_roi = (total / initial_investment - 1) * 100
+    # Calculate Final Results
+    total = sum(capital.values()) + monthly_pool
+    quarterly_roi = (total / initial_investment - 1) * 100
+    
+    return {
+        "capital": capital,
+        "monthly_pool": monthly_pool,
+        "total": total,
+        "quarterly_roi": quarterly_roi
+    }
 
-print(f"Capital Breakdown: {capital}")
-print(f"Monthly Pool: ${monthly_pool:.2f}")
-print(f"Total: ${total:.2f}")
-print(f"Quarterly ROI: {quarterly_roi:.2f}%")
+if __name__ == "__main__":
+    results = run_simulation()
+    print(f"Capital Breakdown: {results['capital']}")
+    print(f"Monthly Pool: ${results['monthly_pool']:.2f}")
+    print(f"Total: ${results['total']:.2f}")
+    print(f"Quarterly ROI: {results['quarterly_roi']:.2f}%")
