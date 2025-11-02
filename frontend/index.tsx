@@ -1,7 +1,6 @@
 import EchoBottomDollar from '@/components/EchoBottomDollar'
 import EchoTradeFlow from '@/components/EchoTradeFlow'
 import EchoInfuse from '@/components/EchoInfuse'
-import EchoOrb from '@/components/EchoOrb'
 
 export default function CryptexDashboard() {
   return (
@@ -10,7 +9,6 @@ export default function CryptexDashboard() {
       <EchoBottomDollar />
       <EchoTradeFlow />
       <EchoInfuse />
-      <EchoOrb />
     </div>
   )
 }

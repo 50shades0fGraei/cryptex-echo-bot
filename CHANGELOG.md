@@ -74,6 +74,6 @@ Special thanks to all beta testers and early adopters who helped shape this rele
 ---
 
 For support and updates:
-- Email: graei.trade@protonmail.com
+- Email: emuricagraei.rjl@gmail.com
 - Issues: GitHub Issues
 - Documentation: /docs

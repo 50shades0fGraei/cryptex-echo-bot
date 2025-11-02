@@ -120,7 +120,7 @@ Trading involves substantial risk of loss. This software is provided as-is, and 
 
 ## 🤝 Support
 
-- **Email**: graei.trade@protonmail.com
+- **Email**: emuricagraei.rjl@gmail.com
 - **Issues**: GitHub Issues
 - **Discord**: Coming Soon
 - **Documentation**: /docs

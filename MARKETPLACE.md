@@ -75,7 +75,7 @@ Trading involves risk. This software is provided as-is. Always start with paper 
 
 ## Contact & Support
 - Author: Randall Lujan
-- Email: graei.trade@protonmail.com
+- Email: emuricagraei.rjl@gmail.com
 - Issues: GitHub Issues
 - Documentation: /docs
 

@@ -1,4 +1,4 @@
-xport default function EchoInfuse() {
+export default function EchoInfuse() {
   return (
     <div className="mb-6">
       <h2 className="text-xl text-neon mb-2">Infuse Capital</h2>
@@ -13,4 +13,3 @@ xport default function EchoInfuse() {
     </div>
   )
 }
-

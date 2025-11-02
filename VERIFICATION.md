@@ -9,7 +9,7 @@
 
 ## Author Information
 - Name: Randall Lujan
-- Email: graei.trade@protonmail.com
+- Email: emuricagraei.rjl@gmail.com
 - GitHub: 50shades0fGraei
 
 ## Security Scan Results

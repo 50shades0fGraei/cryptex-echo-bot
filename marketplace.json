@@ -21,7 +21,7 @@
       "storage": ">=10GB"
     },
     "support": {
-      "email": "graei.trade@protonmail.com",
+      "email": "emuricagraei.rjl@gmail.com",
       "response_time": "24h",
       "channels": [
         "email",
@@ -37,7 +37,7 @@
     "security": {
       "updates": "automatic",
       "scan_frequency": "daily",
-      "vulnerability_reporting": "security@graei.trade"
+      "vulnerability_reporting": "emuricagraei.rjl@gmail.com"
     },
     "compliance": {
       "data_protection": true,
